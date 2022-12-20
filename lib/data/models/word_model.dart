@@ -1,153 +1,54 @@
 class WordModel {
-  String? word;
-  String? phonetic;
-  List<PhoneticsModel>? phonetics;
-  List<MeaningsModel>? meanings;
-  LicenseModel? license;
-  List<String>? sourceUrls;
+  String _word = '';
+  final List<String> _phonetics = [''];
+  final Map<String, List<String>> _meanings = {
+    '': ['']
+  };
+  final Map<String, Map<String, List<String>>> _synonymsAndAntonyms = {
+    '': {
+      '': ['']
+    }
+  };
 
-  WordModel({
-    this.word,
-    this.phonetic,
-    this.phonetics,
-    this.meanings,
-    this.license,
-    this.sourceUrls,
-  });
+  String get word => _word;
+
+  List<String> get phonetics => _phonetics;
+
+  Map<String, List<String>> get meanings => _meanings;
+
+  Map<String, Map<String, List<String>>> get synonymsAndAntonyms =>
+      _synonymsAndAntonyms;
 
   WordModel.fromJson(Map<String, dynamic> json) {
-    word = json['word'];
-    phonetic = json['phonetic'];
-    if (json['phonetics'] != null) {
-      phonetics = <PhoneticsModel>[];
-      json['phonetics'].forEach((v) {
-        phonetics!.add(PhoneticsModel.fromJson(v));
-      });
+    // the searched word
+    _word = json['word'];
+    // The phonetics of the required word
+    for (var i in json['phonetics']) {
+      if (i['text'] != null) {
+        _phonetics.add(i['text']);
+      }
     }
-    if (json['meanings'] != null) {
-      meanings = <MeaningsModel>[];
-      json['meanings'].forEach((v) {
-        meanings!.add(MeaningsModel.fromJson(v));
-      });
+    if (_phonetics.length != 1) {
+      _phonetics.remove('');
     }
-    license =
-        json['license'] != null ? LicenseModel.fromJson(json['license']) : null;
-    sourceUrls = json['sourceUrls'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['word'] = word;
-    data['phonetic'] = phonetic;
-    if (phonetics != null) {
-      data['phonetics'] = phonetics!.map((v) => v.toJson()).toList();
+    // Part of speech the word belongs to and its meanings
+    for (var i in json['meanings']) {
+      _meanings[i['partOfSpeech']] = [
+        ...i['definitions'].map((definition) => definition['definition'])
+      ];
     }
-    if (meanings != null) {
-      data['meanings'] = meanings!.map((v) => v.toJson()).toList();
+    if (_meanings.length != 1) {
+      _meanings.remove('');
     }
-    if (license != null) {
-      data['license'] = license!.toJson();
+    // Part of speech the word belongs to and its antonyms
+    for (var i in json['meanings']) {
+      _synonymsAndAntonyms[i['partOfSpeech']] = {
+        'synonyms': [...i['synonyms'].map((synonym) => synonym)],
+        'antonyms': [...i['antonyms'].map((antonym) => antonym)],
+      };
     }
-    data['sourceUrls'] = sourceUrls;
-    return data;
-  }
-}
-
-class PhoneticsModel {
-  String? text;
-  String? audio;
-  String? sourceUrl;
-  LicenseModel? license;
-
-  PhoneticsModel({this.text, this.audio, this.sourceUrl, this.license});
-
-  PhoneticsModel.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    audio = json['audio'];
-    sourceUrl = json['sourceUrl'];
-    license =
-        json['license'] != null ? LicenseModel.fromJson(json['license']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['text'] = text;
-    data['audio'] = audio;
-    data['sourceUrl'] = sourceUrl;
-    if (license != null) {
-      data['license'] = license!.toJson();
+    if (_synonymsAndAntonyms.length != 1) {
+      _synonymsAndAntonyms.remove('');
     }
-    return data;
-  }
-}
-
-class MeaningsModel {
-  String? partOfSpeech;
-  List<DefinitionsModel>? definitions;
-  List<String>? synonyms;
-  List<String>? antonyms;
-
-  MeaningsModel(
-      {this.partOfSpeech, this.definitions, this.synonyms, this.antonyms});
-
-  MeaningsModel.fromJson(Map<String, dynamic> json) {
-    partOfSpeech = json['partOfSpeech'];
-    if (json['definitions'] != null) {
-      definitions = <DefinitionsModel>[];
-      json['definitions'].forEach((v) {
-        definitions!.add(DefinitionsModel.fromJson(v));
-      });
-    }
-    synonyms = json['synonyms'].cast<String>();
-    antonyms = json['antonyms'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['partOfSpeech'] = partOfSpeech;
-    if (definitions != null) {
-      data['definitions'] = definitions!.map((v) => v.toJson()).toList();
-    }
-    data['synonyms'] = synonyms;
-    data['antonyms'] = antonyms;
-    return data;
-  }
-}
-
-class DefinitionsModel {
-  String? definition;
-  String? example;
-
-  DefinitionsModel({this.definition, this.example});
-
-  DefinitionsModel.fromJson(Map<String, dynamic> json) {
-    definition = json['definition'];
-    example = json['example'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['definition'] = definition;
-    data['example'] = example;
-    return data;
-  }
-}
-
-class LicenseModel {
-  String? name;
-  String? url;
-
-  LicenseModel({this.name, this.url});
-
-  LicenseModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    url = json['url'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['url'] = url;
-    return data;
   }
 }
