@@ -1,5 +1,7 @@
+import 'package:dictionary/data/models/failure_model.dart';
 import 'package:dictionary/data/models/word_model.dart';
 import 'package:dictionary/data/repositories/word_data.dart';
+import 'package:dictionary/presentation/screens/failure_screen.dart';
 import 'package:dictionary/presentation/screens/loading_screen.dart';
 import 'package:dictionary/presentation/screens/word_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ class BusinessLogic {
   }
 
   bool isLoading = false;
-  late WordModel _wordModel;
+  var _response;
   final WordData wordData = WordData();
 
   void splashScreenLoaded({required BuildContext context}) {
@@ -34,8 +36,12 @@ class BusinessLogic {
     required String searchQuery,
   }) async {
     loadLoadingScreen(context: context);
-    _wordModel = await wordData.searchWord(searchQuery: searchQuery);
-    displaySearchResult(context: context, wordModel: _wordModel);
+    _response = await wordData.searchWord(searchQuery: searchQuery);
+    if (_response is WordModel) {
+      displaySearchResult(context: context, wordModel: _response);
+    } else {
+      displayFailureScreen(context: context, failureModel: _response);
+    }
   }
 
   void displaySearchResult({
@@ -47,7 +53,21 @@ class BusinessLogic {
     }
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => WordDetailScreen(wordDetail: _wordModel),
+        builder: (context) => WordDetailScreen(wordDetail: wordModel),
+      ),
+    );
+  }
+
+  void displayFailureScreen({
+    required BuildContext context,
+    required FailureModel failureModel,
+  }) {
+    if (isLoading) {
+      Navigator.of(context).pop();
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FailureScreen(failureDetail: failureModel),
       ),
     );
   }

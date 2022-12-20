@@ -1,4 +1,5 @@
 import 'package:dictionary/presentation/animations/splash_screen_lottie.dart';
+import 'package:dictionary/presentation/screens/failure_screen.dart';
 import 'package:dictionary/presentation/screens/loading_screen.dart';
 import 'package:dictionary/presentation/screens/search_screen.dart';
 import 'package:flutter/material.dart';
