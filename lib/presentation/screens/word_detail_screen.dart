@@ -1,17 +1,12 @@
-import 'package:dictionary/constants/example_response.dart';
 import 'package:dictionary/constants/text_style_constants.dart';
 import 'package:dictionary/data/models/word_model.dart';
 import 'package:flutter/material.dart';
 
-class WordDetailScreen extends StatefulWidget {
-  const WordDetailScreen({super.key});
+class WordDetailScreen extends StatelessWidget {
+  const WordDetailScreen({super.key, required WordModel wordDetail})
+      : _wordDetail = wordDetail;
 
-  @override
-  State<WordDetailScreen> createState() => _WordDetailScreenState();
-}
-
-class _WordDetailScreenState extends State<WordDetailScreen> {
-  WordModel wordDetail = WordModel.fromJson(dummyResponse[0]);
+  final WordModel _wordDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +23,15 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
                   children: [
                     const SizedBox(height: 100),
                     Text(
-                      wordDetail.word,
+                      _wordDetail.word,
                       style: TextStyleConstants.headingTextStyleSerif,
                     ),
                     const SizedBox(height: 10),
-                    phoneticsList(phoneticsList: wordDetail.phonetics),
+                    phoneticsList(phoneticsList: _wordDetail.phonetics),
                     const SizedBox(height: 40),
                     details(
-                      meanings: wordDetail.meanings,
-                      synonymsAndAntonyms: wordDetail.synonymsAndAntonyms,
+                      meanings: _wordDetail.meanings,
+                      synonymsAndAntonyms: _wordDetail.synonymsAndAntonyms,
                     ),
                   ],
                 ),

@@ -1,6 +1,8 @@
 import 'package:dictionary/constants/border_style_constants.dart';
 import 'package:dictionary/constants/palette.dart';
 import 'package:dictionary/constants/text_style_constants.dart';
+import 'package:dictionary/logic/business_logic.dart';
+import 'package:dictionary/presentation/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final BusinessLogic businessLogic = BusinessLogic();
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
@@ -41,6 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const SizedBox(height: 10),
                   TextField(
+                    controller: _searchQuery,
                     cursorColor: Palette.textFieldCursorColor,
                     decoration: InputDecoration(
                       label: const Text(
@@ -61,7 +65,12 @@ class _SearchScreenState extends State<SearchScreen> {
                             Icons.search,
                             color: Colors.grey,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            businessLogic.searchWord(
+                              context: context,
+                              searchQuery: _searchQuery.text,
+                            );
+                          },
                         ),
                       ),
                       enabledBorder:
@@ -70,12 +79,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           BorderStyleConstants.searchFieldBorderStyle,
                       border: BorderStyleConstants.searchFieldBorderStyle,
                     ),
+                    onSubmitted: (value) {
+                      businessLogic.searchWord(
+                        context: context,
+                        searchQuery: _searchQuery.text,
+                      );
+                    },
                   ),
                   const SizedBox(height: 30),
-                  Text(
-                    'Recent',
-                    style: TextStyleConstants.subHeadingTextStyleSerif,
-                  ),
                 ],
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:dictionary/presentation/animations/splash_screen_lottie.dart';
+import 'package:dictionary/presentation/screens/loading_screen.dart';
 import 'package:dictionary/presentation/screens/search_screen.dart';
-import 'package:dictionary/presentation/screens/word_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,9 +17,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const WordDetailScreen(),
+      home: const SplashScreenLottie(),
       routes: {
         SearchScreen.routeName: (context) => const SearchScreen(),
+        LoadingScreen.routeName: (context) => const LoadingScreen(),
         SplashScreenLottie.routeName: (context) => const SplashScreenLottie(),
       },
     );

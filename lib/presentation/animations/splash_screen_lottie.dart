@@ -14,6 +14,7 @@ class SplashScreenLottie extends StatefulWidget {
 class _SplashScreenLottieState extends State<SplashScreenLottie>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
+  final BusinessLogic businessLogic = BusinessLogic();
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _SplashScreenLottieState extends State<SplashScreenLottie>
           animate: true,
           onLoaded: (p0) {
             _animationController.forward().whenComplete(
-                  () => BusinessLogic().splashScreenLoaded(context),
+                  () => businessLogic.splashScreenLoaded(context: context),
                 );
           },
         ),
